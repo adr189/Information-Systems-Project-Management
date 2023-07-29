@@ -1,0 +1,13 @@
+<context name="userContext">
+  <provider [value]="user" name="userContext">
+
+    <app-sidebar-admin *ngIf="isAdmin">
+    </app-sidebar-admin>
+    <app-sidebar-regular *ngIf="isRegular">
+    </app-sidebar-regular>
+    <router-outlet *ngIf="!isRegular && !isAdmin">
+    </router-outlet>
+    <app-toasts></app-toasts>
+
+  </provider>
+</context>

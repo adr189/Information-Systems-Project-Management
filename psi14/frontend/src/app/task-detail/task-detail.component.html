@@ -1,0 +1,128 @@
+<div class="team-detail">
+  <h3 class="my-h3">Task</h3>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label for="taskName">Name</label>
+      <input type="text" class="form-control" id="taskName" [value]="task!.name" disabled>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="taskPriority">Priority</label>
+      <input type="text" class="form-control" id="taskPriority" [value]="task!.priority" disabled>
+    </div>
+    <div class="form-group col-md-4">
+      <label for="projetoName">Project</label>
+      <div class="projeto-name">
+        <select class="form-control" name="selected project"
+                [(ngModel)]="selectedProj"
+                (change)="selectOption()"
+                [disabled]="selectedProj != null">
+          <option [ngValue]="null" disabled>Associate a project</option>
+          <option *ngIf="isProjectSelected && selectedProj!=null" selected
+                  [ngValue]="selectedProj">{{selectedProj!.name}}</option>
+          <option *ngFor="let p of projects" [ngValue]="p._id">
+            {{ p.name}}
+          </option>
+        </select>
+        <div *ngIf="isProjectSelected">
+          <button type="button" (click)="cleanOption()" class="btnProjetoName btn btn-danger">
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="taskName">Begin Date</label>
+        <input  type="date" class="form-control" id="begin_date"
+               [min]="current_date"
+               formControlName="begin_date"
+               [ngClass]="{ 'is-invalid': submitted && (f.begin_date.errors ||invalidTime)}">
+        <div *ngIf="submitted && (f.begin_date.errors || invalidTime)"
+             class="invalid-feedback">
+          <div *ngIf="invalidTime ===true">Begin date is not valid</div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="taskPriority">End Date</label>
+        <input type="date" class="form-control" id="end_date"
+               formControlName="end_date"
+               [min]="this.form.value.begin_date == '' ? current_date : this.form.value.begin_date"
+               [ngClass]="{ 'is-invalid': submitted && (f.end_date.errors || invalidTime) }">
+        <div *ngIf="submitted && (f.end_date.errors || invalidTime)"
+             class="invalid-feedback">
+          <div *ngIf="invalidTime ===true">End date is not valid</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="taskName">Begin Hour</label>
+        <input type="time" atp-time-picker theme="light" locale='en'
+               arrowStyle="{'background': '#0d6efd', 'color': 'white'}" class="form-control"
+               id="begin_hour"
+               placeholder="Begin hour"
+               formControlName="begin_hour"
+               [ngClass]="{ 'is-invalid': submitted && (f.begin_hour.errors || invalidTime)}">
+        <div *ngIf="submitted && (f.begin_hour.errors || invalidTime)"
+             class="invalid-feedback">
+          <div *ngIf="invalidTime ===true">Begin hour is not valid</div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="taskName">End Hour</label>
+        <input type="time" atp-time-picker theme="light" locale='en'
+               arrowStyle="{'background': '#0d6efd', 'color': 'white'}" class="form-control"
+               id="end_hour"
+               placeholder="End hour"
+               formControlName="end_hour"
+               [ngClass]="{ 'is-invalid': submitted && (f.end_hour.errors || invalidTime)}">
+        <div *ngIf="submitted && (f.end_hour.errors || invalidTime)"
+             class="invalid-feedback">
+          <div *ngIf="invalidTime ===true">End hour is not valid</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <label for="taskPercentage">Percentage</label>
+        <div class="range-wrap">
+          <input class="range form-range" id="taskPercentage" name="range1" type="range" min="0" max="100"
+                 formControlName="percentage">
+          <output class="output">{{this.form.value.percentage}}%</output>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-12">
+        <button type="submit" class="updatebutton btn btn-primary">Update</button>
+      </div>
+    </div>
+
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="users">List of users</label>
+        <app-search-user [callbackFunction]="addUserToTask"></app-search-user>
+      </div>
+    </div>
+    <div class="listUsers row ">
+      <div *ngFor="let user of users " class="user col-md-3 col-sm-6 col-xs-6">
+        <div class="mycard card" style="width: 18rem;">
+          <img class="userImage card-img-top" src="../../assets/images/user_image.png" alt="Card image cap">
+          <div class="user card-body">
+            <a class="ellipsis">{{user.name}}</a>
+            <button type="button" (click)="removeUserToTask(user)" class="btn btn-danger">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </form>
+</div>

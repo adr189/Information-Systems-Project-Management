@@ -1,0 +1,74 @@
+<div class="projects">
+  <h3 class="my-h3">Criar Projeto</h3>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label for="project_name" class="form-label">Name</label>
+        <input focusOnInit type="text" class="form-control" id="project_name" placeholder="Project's name"
+               formControlName="name"
+               [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
+        <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+          <div *ngIf="f.name.errors?.['required']">Required name</div>
+          <div *ngIf="f.name.errors?.['minlength']">Minimum 4 characters</div>
+          <div *ngIf="f.name.errors?.['pattern']">Alphanumeric characters only</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="project_acronym" class="form-label">Acronym</label>
+        <input type="text" class="form-control" id="project_acronym" placeholder="Project's acronym"
+               formControlName="acronym" [ngClass]="{ 'is-invalid': submitted && f.acronym.errors }">
+        <div *ngIf="submitted && f.acronym.errors" class="invalid-feedback">
+          <div *ngIf="f.acronym.errors?.['required']">Required acronym</div>
+          <div *ngIf="f.acronym.errors?.['pattern']">Minimum 3 alphanumeric characters</div>
+          <div *ngIf="f.acronym.errors?.['unique']">Acronym already exists</div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label for="project_begin_date" class="form-label">Begin date</label>
+
+        <input type="date" class="form-control" id="project_begin_date" placeholder="Begin date"
+               formControlName="begin_date" [min]="current_date"
+               [ngClass]="{ 'is-invalid': submitted && f.begin_date.errors }">
+        <div *ngIf="submitted && f.begin_date.errors" class="invalid-feedback">
+          <div *ngIf="f.begin_date.errors?.['required']">Begin date is required</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <fieldset [disabled]="!f.begin_date.value">
+
+          <label for="project_end_date" class="form-label">End date</label>
+          <input type="date" class="form-control" id="project_end_date" placeholder="End date is required"
+                 formControlName="end_date" [min]="f.begin_date.value"
+                 [ngClass]="{ 'is-invalid': submitted && f.end_date.errors }"
+          >
+          <div *ngIf="submitted && f.end_date.errors" class="invalid-feedback">
+            <div *ngIf="f.end_date.errors['required']">End date is required</div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+    <button type="submit" class="create-projects-button btn btn-primary">Create project</button>
+  </form>
+  <h3 class="my-h3">List of Projects</h3>
+  <table class="projects_list table table-hover">
+    <thead class="table-light">
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Acronym</th>
+      <th scope="col" class="mobile-version">Begin date</th>
+      <th scope="col" class="mobile-version">End date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let project of projects" tabindex=0>
+      <td>{{project.name}}</td>
+      <td>{{project.acronym}}</td>
+      <td class="mobile-version">{{project.begin_date && formatDate(project.begin_date)}}</td>
+      <td class="mobile-version">{{project.end_date && formatDate(project.end_date)}}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>

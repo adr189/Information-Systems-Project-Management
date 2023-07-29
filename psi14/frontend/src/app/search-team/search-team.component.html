@@ -1,0 +1,16 @@
+<div class="projeto-name">
+  <input focusOnInit class="searchTeamInput form-control mr-sm-2"
+         type="search" placeholder="Search" aria-label="Search"
+         #newTeamName
+         (input)="search(newTeamName.value)" (focusin)="search('all')" list="datalistOptions1">
+  <datalist id="datalistOptions1">
+    <option *ngFor="let team of teams$ | async" [value]="team.name">{{saveCurrentTeam(team)}}</option>
+  </datalist>
+  <div>
+    <button type="button" class="btnProjetoName btn btn-primary"
+            (click)="this.callbackFunction(currentTeam);">
+      <i class="bi bi-plus-square"></i>
+    </button>
+  </div>
+</div>
+

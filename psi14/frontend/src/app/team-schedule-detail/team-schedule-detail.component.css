@@ -1,0 +1,67 @@
+.agenda {  }
+
+/* Dates */
+.agenda .agenda-date { width: 170px; }
+.agenda .agenda-date .dayofmonth {
+  width: 40px;
+  font-size: 36px;
+  line-height: 36px;
+  float: left;
+  text-align: right;
+  margin-right: 10px;
+}
+.agenda .agenda-date .shortdate {
+  font-size: 0.75em;
+}
+
+
+/* Times */
+.agenda .agenda-time { width: 140px; }
+
+
+/* Events */
+.agenda .agenda-events {  }
+.agenda .agenda-events .agenda-event {  }
+
+@media (max-width: 767px) {
+  .calendar{
+    font-size: 10px!important;
+
+
+  }
+}
+
+.schedule{
+  margin-top: 30px;
+}
+
+.my-h1{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.cal-day-cell.cal-today{
+  background-color: red !important;
+}
+
+.buttondate{
+  display: flex;
+  align-items: center;
+}
+
+.title-schedule {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+
+.title-date{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.offcanvas-end {
+  width: 600px;
+}

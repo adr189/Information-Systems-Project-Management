@@ -1,0 +1,20 @@
+<div class="teams-schedules">
+
+  <div class="list-users">
+    <h3 class="my-h3">List of teams</h3>
+    <div class="listUsers row" focusOnInit tabindex=0>
+      <div *ngFor="let team of teams" class="user col-md-2 col-sm-6 col-xs-6">
+        <div tabindex=0 class="mycard card" style="width: 18rem;" (click)="navigateToSchedule(team._id)"
+             (keyup.enter)="navigateToSchedule(team._id)">
+          <img class="userImage card-img-top" src="../../assets/images/user_image.png" alt="Card image cap">
+          <div class="user card-body">
+            <div>
+              <a class="ellipsis">{{team.name}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,76 @@
+<consumer name="userContext">
+  <ng-template let-userCurrent>
+    <div class="schedule">
+      <h1 class="my-h1">{{user?.name}}'s schedule</h1>
+
+      <div class="title-date row text-center">
+
+        <div class="col-md-4">
+          <div class="title-schedule">
+            <div class="buttondate btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
+              <i class="bi bi-arrow-left"></i>
+            </div>
+            <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+            <div class="buttondate btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-----------------------------  DAYS DETAILS -------------------------------------------------------------->
+
+    <a tabindex=0 (keyup.enter)="showDayDetails()"
+       class="hiddenButton"
+       data-bs-toggle="offcanvas"
+       data-bs-target="#offcanvasRightDetails"
+       aria-controls="offcanvasRight">
+    </a>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRightDetails"
+         aria-labelledby="offcanvasRightLabel">
+
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightCreateMeetingTeamDetailsLabel">Meetings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+
+      <div class="offcanvas-body">
+        <div class="list-group">
+          <a tabindex=0 *ngFor="let event of eventsDetails let i = index"
+             class="list-group-item list-group-item-action" aria-current="true">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 *ngIf="event.id == 'USER'" class="mb-1">Meeting with users</h5>
+              <h5 *ngIf="event.id == 'TEAM'" class="mb-1">Meeting with team</h5>
+              <h5 *ngIf="event.id == 'OCCUPIED'" class="mb-1">Occupied</h5>
+              <h5 *ngIf="event.id == 'TASK'" class="mb-1">Task</h5>
+              <span *ngIf="event.id == 'USER'" class="badge badge-pill badge-primary">{{event.id}}</span>
+              <span *ngIf="event.id == 'TEAM'" class="badge badge-pill badge-success">{{event.id}}</span>
+              <span *ngIf="event.id == 'OCCUPIED'" class="badge badge-pill badge-secondary">{{event.id}}</span>
+              <span *ngIf="event.id == 'TASK'" class="badge badge-pill badge-warning">{{event.id}}</span>
+            </div>
+            <div *ngIf="event.id =='TASK'">
+              <h6>
+                {{event?.title}}
+              </h6>
+            </div>
+            <p *ngIf="event.id !='TASK'" class="mb-1">From: {{readableHour(event.start)}}</p>
+            <p *ngIf="event.id !='TASK'" class="mb-1">To: {{readableHour(event.end)}}</p>
+            <p *ngIf="event.id =='TASK'" class="mb-1">From Day: {{readableDate(event.start)}}
+              at {{readableHour(event.start)}}</p>
+            <p *ngIf="event.id =='TASK'" class="mb-1">To Day: {{readableDate(event.end)}}
+              at {{readableHour(event.end)}}</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <mwl-calendar-month-view class="calendar" [viewDate]="viewDate" [events]="events"
+                             (dayClicked)="dayClicked($event.day)">
+    </mwl-calendar-month-view>
+  </ng-template>
+</consumer>

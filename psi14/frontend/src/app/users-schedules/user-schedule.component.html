@@ -1,0 +1,19 @@
+<div class="users-schedules">
+  <div class="list-users">
+    <h3 tabindex=0 class="my-h3">List of users</h3>
+    <div class="listUsers row" tabindex=0 focusOnInit>
+      <div *ngFor="let user of users" class="user col-md-2 col-sm-6 col-xs-6">
+        <div  tabindex=0 class="mycard card" style="width: 18rem;" (click)="navigateToSchedule(user._id)"
+             (keyup.enter)="navigateToSchedule(user._id)">
+          <img class="userImage card-img-top" src="../../assets/images/user_image.png" alt="Card image cap">
+          <div class="user card-body">
+            <div>
+              <a class="ellipsis">{{user.name}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

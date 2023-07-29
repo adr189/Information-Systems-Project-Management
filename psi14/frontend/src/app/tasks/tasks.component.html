@@ -1,0 +1,67 @@
+<consumer name="userContext">
+  <ng-template let-user>
+
+    <div class="tasks">
+      <h3 class="my-h3">Create tasks</h3>
+      <form [formGroup]="form" (ngSubmit)="onSubmit(user._id)">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <label for="task_name" class="form-label">Name</label>
+            <input focusOnInit type="text" class="form-control" id="task_name" placeholder="Task name" formControlName="name"
+                   [ngClass]="{ 'is-invalid': submitted && f['name'].errors }">
+            <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+              <div *ngIf="f['name'].errors?.['required']">Name is required</div>
+              <div *ngIf="f['name'].errors?.['minlength']">Minimum 4 characters</div>
+              <div *ngIf="f['name'].errors?.['pattern']">Alphanumeric characters only</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <label for="taskPriority" class="form-label">Priority</label>
+            <select id="taskPriority" class="form-control" formControlName="priority"
+                    [ngClass]="{ 'is-invalid': submitted && f['priority'].errors }">
+              <option disabled selected>Select priority</option>
+              <option>Urgent</option>
+              <option>High</option>
+              <option>Medium</option>
+              <option>Low</option>
+            </select>
+            <div *ngIf="submitted && f['priority'].errors" class="invalid-feedback">
+              <div *ngIf="f['priority'].errors?.['pattern']">Priority is required</div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <button type="submit" class="create-task-button btn btn-primary">Create task</button>
+          </div>
+        </div>
+      </form>
+      <h3 class="my-h3">List of Tasks</h3>
+
+      <table class="projects_list table table-hover">
+        <thead class="table-light">
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Priority</th>
+          <th class="remove-small-screen" scope="col">Percentage</th>
+          <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr tabindex=0 (keyup.enter)="navigateToDetails(task._id)"
+            class="line-task" *ngFor="let task of tasks" (click)="navigateToDetails(task._id)">
+          <td>{{task.name}}</td>
+          <td>{{task.priority}}</td>
+          <td class="remove-small-screen"><span class="badge bg-primary rounded-pill">{{task.percentage}}%</span></td>
+          <td>
+            <button type="button" (click)="deleteTask(task)" class="btnProjetoName btn btn-danger">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </ng-template>
+</consumer>
+
+

@@ -1,0 +1,54 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<consumer name="userContext">
+  <ng-template let-user>
+    <mat-toolbar class="mat-elevation-z8">
+      <button
+        class="button-menu"
+        mat-icon-button
+        *ngIf="sidenav.mode === 'over'"
+        (click)="sidenav.toggle()"
+      >
+        <mat-icon *ngIf="!sidenav.opened"> menu</mat-icon>
+        <mat-icon *ngIf="sidenav.opened"> close</mat-icon>
+      </button>
+    </mat-toolbar>
+
+    <mat-sidenav-container>
+      <mat-sidenav #sidenav="matSidenav" class="mat-elevation-z8">
+        <img (click)="navigateHome()" class="avatar mat-elevation-z8" src="assets/images/user_image.png"
+             alt="Card image cap">
+
+
+        <h4 class="name">PSI DEMO</h4>
+        <p class="designation">{{user.name}}</p>
+
+        <mat-divider></mat-divider>
+        <div class="list-options">
+          <button mat-button class="button-option menu-button" routerLink="/schedule">
+            <span>Schedule</span>
+          </button>
+          <button mat-button class="button-option menu-button" routerLink="/tasks">
+            <span>Tasks</span>
+          </button>
+          <button mat-button class="button-option menu-button" routerLink="/teams/schedules">
+            <span>Teams Schedules</span>
+          </button>
+          <button mat-button class="button-option menu-button" routerLink="/users/schedule">
+            <span>User's Schedules</span>
+          </button>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="list-options">
+          <button (click)="logout()" mat-button class="button-option menu-button">
+            <span>Logout</span>
+          </button>
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content>
+        <div class="content mat-elevation-z8">
+          <router-outlet></router-outlet>
+        </div>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  </ng-template>
+</consumer>

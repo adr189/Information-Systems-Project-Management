@@ -1,0 +1,419 @@
+<consumer name="userContext">
+  <ng-template let-userCurrent>
+    <div class="schedule">
+
+      <div class="myrow row text-center">
+
+        <div class="col-md-4">
+          <div class="title-schedule">
+            <div tabindex=0 class="buttondate btn btn-primary" mwlCalendarPreviousView [view]="view" [(viewDate)]="viewDate">
+              <i class="bi bi-arrow-left"></i>
+            </div>
+            <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+            <div tabindex=0 class="buttondate btn btn-primary" mwlCalendarNextView [view]="view" [(viewDate)]="viewDate">
+              <i class="bi bi-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="dropdown">
+            <button tabindex=0 focusOnInit class="mybutton btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+              Create
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li><a tabindex=0 (keyup.enter)="showRightMenuCreateMeetingWithUser()"
+                     class="clickable value1dropdown dropdown-item"
+                     data-bs-toggle="offcanvas"
+                     data-bs-target="#offcanvasRightCreateMeetingUser"
+                     aria-controls="offcanvasRight" (click)="addUser(userCurrent._id)">meeting with users</a>
+              </li>
+              <li><a tabindex=0 (keyup.enter)="showRightMenuCreateMeetingWithTeams()"
+                     class="clickable value1dropdownTeam dropdown-item"
+                     data-bs-toggle="offcanvas"
+                     data-bs-target="#offcanvasRightCreateMeetingTeam"
+                     aria-controls="offcanvasRight" (click)="addUser(userCurrent._id)">meeting with teams</a>
+              </li>
+              <li><a tabindex=0 (keyup.enter)="showRightMenuCreateOccupied()"
+                     class="clickable value1dropdownOccupied dropdown-item"
+                     data-bs-toggle="offcanvas"
+                     data-bs-target="#offcanvasRightCreateOccupiedPeriod"
+                     aria-controls="offcanvasRight" (click)="addUser(userCurrent._id)">occupied period</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-----------------------------  USER MEETING ------------------------------------------------------------------->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRightCreateMeetingUser"
+         aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabel">Create new meeting with users</h5>
+        <button type="button" class="btn-close-user btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="header2 offcanvas-header">
+        <div class="col-md-6 mb-6">
+          <button type="button" (click)="resetFormForUser()" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        </div>
+        <div class="submitButton">
+          <button type="submit" (click)="onSubmitForUser()" class="btn btn-primary">Confirm meeting</button>
+        </div>
+      </div>
+      <div class="offcanvas-body">
+        <div *ngIf="isLoading" class="loading">Loading&#8230;</div>
+
+        <form class="optionsAvailability row g-3" [formGroup]="formForUsers" (ngSubmit)="getAvailableOptionsForUser()">
+          <div class="row">
+
+            <div class="col-md-6 mb-6">
+              <label for="duration" class="form-label">Duration</label>
+              <input type="number" class="form-control" id="duration" min="30" step="30" max="3600" value="30"
+                     formControlName="duration"
+                     [ngClass]="{ 'is-invalid': submittedForUser && fForUsers['duration'].errors }">
+              <div *ngIf="submittedForUser && fForUsers['duration'].errors" class="invalid-feedback">
+                <div *ngIf="fForUsers['duration'].errors?.['required']">Duration is required</div>
+                <div *ngIf="fForUsers['duration'].errors?.['duration']?.invalid">Duration must be a multiple of 30</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-6">
+              <label for="project_begin_date" class="form-label">Begin date</label>
+
+              <input type="date" class="form-control" id="project_begin_date" placeholder="Begin date"
+                     formControlName="begin_date" [min]="current_date"
+                     [ngClass]="{ 'is-invalid': submittedForUser && fForUsers.begin_date.errors }">
+              <div *ngIf="submittedForUser && fForUsers.begin_date.errors" class="invalid-feedback">
+                <div *ngIf="fForUsers.begin_date.errors?.['required']">Begin date is required</div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-6">
+              <fieldset [disabled]="!fForUsers.begin_date.value">
+
+                <label for="project_end_date" class="form-label">End date</label>
+                <input type="date" class="form-control" id="project_end_date" placeholder="End date is required"
+                       formControlName="end_date" [min]="fForUsers.begin_date.value"
+                       [ngClass]="{ 'is-invalid': submittedForUser && fForUsers.end_date.errors }"
+                >
+                <div *ngIf="submittedForUser && fForUsers.end_date.errors" class="invalid-feedback">
+                  <div *ngIf="fForUsers.end_date.errors['required']">End date is required</div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 mb-12">
+              <label for="users">List of users</label>
+              <app-search-user [ngClass]="{ 'is-invalid': submittedForUser && fForUsers.users.errors }"
+                               [callbackFunction]="addUser"></app-search-user>
+              <div *ngIf="submittedForUser && fForUsers.users.errors" class="invalid-feedback">
+                <div *ngIf="fForUsers.users.errors['required']">Users are required</div>
+              </div>
+            </div>
+
+          </div>
+          <div class="listUsers row ">
+            <div *ngFor="let user of users" class="user col-md-6 col-sm-6 col-xs-6">
+              <div class="mycard card" style="width: 18rem;">
+                <img class="userImage card-img-top" src="../../assets/images/user_image.png" alt="Card image cap">
+                <div class="user card-body">
+                  <a class="ellipsis">{{user.name}}</a>
+                  <button type="button" (click)="removeUser(user)" class="btn btn-danger">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="submitButton row">
+            <div class="col-12">
+              <button type="submit" class="buttonAvailability btn btn-primary">Check availability</button>
+            </div>
+          </div>
+        </form>
+
+        <form class="optionsAvailability2 row g-3" (ngSubmit)="onSubmitForUser()">
+
+
+          <div class="list-group">
+            <a tabindex=0 *ngFor="let meeting of availableMeetingsForUsers let i = index" id="meeting{{i}}user"
+               class="list-group-item list-group-item-action" aria-current="true"
+               (click)="selectOptionMeetingForUser(meeting,i)"
+               (keyup.enter)="selectOptionMeetingForUser(meeting,i)">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Meeting</h5>
+              </div>
+              <p class="mb-1">{{formatDate(meeting.begin)}} </p>
+              <p class="mb-1">From: {{meeting.begin.getHours()}}:{{meeting.begin.getMinutes()}}</p>
+              <p class="mb-1">To: {{meeting.end.getHours()}}:{{meeting.end.getMinutes()}}</p>
+            </a>
+          </div>
+
+
+        </form>
+
+
+      </div>
+    </div>
+
+
+    <!-----------------------------  TEAM MEETING ------------------------------------------------------------------->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRightCreateMeetingTeam"
+         aria-labelledby="offcanvasRightLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightLabelLabel">Create new meeting with teams</h5>
+        <button type="button" class="btn-close-team btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="headerTeam2 offcanvas-header">
+        <div class="col-md-6 mb-6">
+          <button type="button" (click)="resetFormForTeam()" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        </div>
+        <div class="submitButton">
+          <button type="submit" (click)="onSubmitForTeam()" class="btn btn-primary">Confirm meeting</button>
+        </div>
+      </div>
+      <div class="offcanvas-body">
+        <div *ngIf="isLoading" class="loading">Loading&#8230;</div>
+
+        <form class="optionsAvailabilityTeam row g-3" [formGroup]="formForTeams"
+              (ngSubmit)="getAvailableOptionsForTeam()">
+          <div class="row">
+
+            <div class="col-md-6 mb-6">submittedForTeam
+              <label for="duration1" class="form-label">Duration</label>
+              <input type="number" class="form-control" id="duration1" min="30" step="30" max="3600" value="30"
+                     formControlName="duration"
+                     [ngClass]="{ 'is-invalid': submittedForTeam && fForTeams['duration'].errors }">
+              <div *ngIf="submittedForTeam && fForTeams['duration'].errors" class="invalid-feedback">
+                <div *ngIf="fForTeams['duration'].errors?.['required']">Duration is required</div>
+                <div *ngIf="fForTeams['duration'].errors?.['duration']?.invalid">Duration must be a multiple of 30</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-6">
+              <label for="project_begin_date1" class="form-label">Begin date</label>
+
+              <input type="date" class="form-control" id="project_begin_date1" placeholder="Begin date"
+                     formControlName="begin_date" [min]="current_date"
+                     [ngClass]="{ 'is-invalid': submittedForTeam && fForTeams.begin_date.errors }">
+              <div *ngIf="submittedForTeam && fForTeams.begin_date.errors" class="invalid-feedback">
+                <div *ngIf="fForTeams.begin_date.errors?.['required']">Begin date is required</div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-6">
+              <fieldset [disabled]="!fForTeams.begin_date.value">
+
+                <label for="project_end_date1" class="form-label">End date</label>
+                <input type="date" class="form-control" id="project_end_date1" placeholder="End date is required"
+                       formControlName="end_date" [min]="fForTeams.begin_date.value"
+                       [ngClass]="{ 'is-invalid': submittedForTeam && fForTeams.end_date.errors }"
+                >
+                <div *ngIf="submittedForTeam && fForTeams.end_date.errors" class="invalid-feedback">
+                  <div *ngIf="fForTeams.end_date.errors['required']">End date is required</div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 mb-12">
+              <label for="teams">List of Teams</label>
+              <app-search-team [ngClass]="{ 'is-invalid': submittedForTeam && fForTeams.team.errors }"
+                               [callbackFunction]="addTeam"></app-search-team>
+              <div *ngIf="submittedForTeam && fForTeams.team.errors" class="invalid-feedback">
+                <div *ngIf="fForTeams.team.errors['required']">Team is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="listUsers row ">
+            <div *ngFor="let team of teams" class="user col-md-6 col-sm-6 col-xs-6">
+              <div class="mycard card" style="width: 18rem;">
+                <img class="userImage card-img-top" src="../../assets/images/default_group.png" alt="Card image cap">
+                <div class="user card-body">
+                  <a class="ellipsis">{{team.name}}</a>
+                  <button type="button" (click)="removeTeam()" class="btn btn-danger">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="submitButton row">
+            <div class="col-12">
+              <button type="submit" class="buttonAvailability btn btn-primary">Check availability</button>
+            </div>
+          </div>
+        </form>
+
+        <form class="optionsAvailabilityTeam2 row g-3" (ngSubmit)="onSubmitForTeam()">
+
+          <div class="list-group">
+            <a tabindex=0 *ngFor="let meeting of availableMeetingsForTeams let i = index" id="meeting{{i}}team"
+               class="list-group-item list-group-item-action" aria-current="true"
+               (click)="selectOptionMeetingForTeam(meeting,i)"
+               (keyup.enter)="selectOptionMeetingForTeam(meeting,i)">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">Meeting</h5>
+              </div>
+              <p class="mb-1">{{formatDate(meeting.begin)}} </p>
+              <p class="mb-1">From: {{meeting.begin.getHours()}}:{{meeting.begin.getMinutes()}}</p>
+              <p class="mb-1">To: {{meeting.end.getHours()}}:{{meeting.end.getMinutes()}}</p>
+            </a>
+          </div>
+
+
+        </form>
+
+
+      </div>
+    </div>
+
+    <!-----------------------------  DAYS DETAILS -------------------------------------------------------------->
+
+    <a tabindex=0 (keyup.enter)="showDayDetails()"
+       class="hiddenButton"
+       data-bs-toggle="offcanvas"
+       data-bs-target="#offcanvasRightDetails"
+       aria-controls="offcanvasRight">
+    </a>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRightDetails"
+         aria-labelledby="offcanvasRightLabel">
+
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightCreateMeetingTeamDetailsLabel">Meetings</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+
+      <div class="header2 offcanvas-header">
+        <div class="col-md-6 mb-6">
+          <button type="button" (click)="resetFormForUser()" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="offcanvas-body">
+        <div class="list-group">
+          <a tabindex=0 *ngFor="let event of eventsDetails let i = index"
+             class="list-group-item list-group-item-action" aria-current="true">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Meeting</h5>
+              <span *ngIf="event.id == 'USER'" class="badge badge-pill badge-primary">{{event.id}}</span>
+              <span *ngIf="event.id == 'TEAM'" class="badge badge-pill badge-success">{{event.id}}</span>
+              <span *ngIf="event.id == 'OCCUPIED'" class="badge badge-pill badge-secondary">{{event.id}}</span>
+            </div>
+            <p class="mb-1">From: {{readableHour(event.start)}}</p>
+            <p class="mb-1">To: {{readableHour(event.end)}}</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+
+    <!----------------------------- OCCUPIED DAY--------------------------------------------------------------------->
+
+    <a tabindex=0 (keyup.enter)="showDayDetails()"
+       class="hiddenButton"
+       data-bs-toggle="offcanvas"
+       data-bs-target="#offcanvasRightCreateOccupiedPeriod"
+       aria-controls="offcanvasRight">
+    </a>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRightCreateOccupiedPeriod"
+         aria-labelledby="offcanvasRightLabel">
+
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasRightCreateOccupiedPeriodLabel">Create new occupied period</h5>
+        <button type="button" class="btn-close-occupied btn-close" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+      </div>
+
+      <div class="header2 offcanvas-header">
+        <div class="col-md-6 mb-6">
+          <button type="button" (click)="resetFormForUser()" class="btn btn-primary">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="offcanvas-body">
+        <form class="optionsAvailabilityTeam row g-3" [formGroup]="formForOccupied">
+          <div class="row">
+            <div class="col-md-12 mb-12">
+              <label for="date_occupied" class="form-label">Date</label>
+
+              <input type="date" class="form-control" id="date_occupied" placeholder="Date"
+                     formControlName="date" [min]="current_date"
+                     [ngClass]="{ 'is-invalid': submittedForOccupied && fForOccupied.date.errors }">
+              <div *ngIf="submittedForOccupied && fForOccupied.date.errors" class="invalid-feedback">
+                <div *ngIf="fForOccupied.date.errors?.['required']">Date is required</div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-6">
+              <label for="project_begin_hour" class="form-label">Begin hour</label>
+
+              <input type="time" atp-time-picker theme="light" locale='en'
+                     arrowStyle="{'background': '#0d6efd', 'color': 'white'}" class="form-control"
+                     id="project_begin_hour"
+                     placeholder="Begin hour"
+                     formControlName="begin_hour" step="1800"
+                     [ngClass]="{ 'is-invalid': submittedForOccupied && fForOccupied.begin_hour.errors }">
+              <div *ngIf="submittedForOccupied && fForOccupied.begin_hour.errors" class="invalid-feedback">
+                <div *ngIf="fForOccupied.begin_hour.errors?.['required']">Begin hour is required</div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-6">
+              <fieldset [disabled]="!fForOccupied.begin_hour.value">
+                <label for="project_end_hour" class="form-label">End hour</label>
+
+                <input type="time" atp-time-picker theme="light" locale='en'
+                       arrowStyle="{'background': '#0d6efd', 'color': 'white'}"
+                       class="form-control" id="project_end_hour" placeholder="End hour is required"
+                       formControlName="end_hour" step="1800"
+                       [ngClass]="{ 'is-invalid': submittedForOccupied && (fForOccupied.end_hour.errors || invalidTimeOccupied) }"
+                >
+                <div *ngIf="submittedForOccupied && (fForOccupied.end_hour.errors || invalidTimeOccupied)"
+                     class="invalid-feedback">
+                  <div *ngIf="fForOccupied.end_hour.errors && fForOccupied.end_hour!.errors!['required']">End hour is
+                    required
+                  </div>
+                  <div *ngIf="invalidTimeOccupied ===true">End hour is not valid</div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <button type="submit" class="buttonAvailability btn btn-primary" (click)="onSubmitForOccupied()">Confirm
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+
+    <mwl-calendar-month-view class="calendar" [viewDate]="viewDate" [events]="events"
+                             (dayClicked)="dayClicked($event.day)">
+    </mwl-calendar-month-view>
+
+  </ng-template>
+</consumer>

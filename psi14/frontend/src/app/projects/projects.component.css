@@ -1,0 +1,28 @@
+
+.projects {
+
+  height: 100%;
+  margin: 20px;
+  padding: 10px;
+
+}
+
+.list-projects {
+  margin-top: 5rem;
+}
+
+.my-h3 {
+  margin-bottom: 2rem;
+}
+
+.create-projects-button{
+  margin-bottom: 2rem;
+}
+
+
+@media (max-width: 768px) {
+  .mobile-version{
+    display: none;
+  }
+
+}

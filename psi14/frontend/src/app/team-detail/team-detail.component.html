@@ -1,0 +1,54 @@
+<div class="team-detail">
+  <h3 class="my-h3">Team</h3>
+  <form>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="teamName">Name</label>
+        <input type="text" class="form-control" id="teamName" [value]="team!.name" disabled>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="projetoName">Project</label>
+        <div class="projeto-name">
+          <select id="projetoName" class="form-control" name="selected project"
+                  [(ngModel)]="selectedProj"
+                  (change)="selectOption()"
+                  [disabled]="selectedProj != null" >
+            <option [ngValue]="null" disabled>Associate a project</option>
+            <option *ngIf="isProjectSelected && selectedProj!=null" selected
+                    [ngValue]="selectedProj">{{selectedProj!.name}}</option>
+            <option *ngFor="let p of projects" [ngValue]="p._id">
+              {{p.name}}
+            </option>
+          </select>
+          <div *ngIf="isProjectSelected">
+            <button type="button" (click)="cleanOption()" class="btnProjetoName btn btn-danger">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="users">List of users</label>
+        <app-search-user [callbackFunction]="addUserToTeam" ></app-search-user>
+      </div>
+    </div>
+    <div class="listUsers row ">
+      <div *ngFor="let user of users" class="user col-md-3 col-sm-6 col-xs-6">
+        <div class="mycard card" style="width: 18rem;">
+          <img class="userImage card-img-top" src="../../assets/images/user_image.png" alt="Card image cap">
+          <div class="user card-body">
+            <a class="ellipsis">{{user.name}}</a>
+            <button type="button" (click)="removeUser(user)" class="btn btn-danger">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>

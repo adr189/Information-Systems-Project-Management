@@ -1,0 +1,15 @@
+.myToast {
+  z-index: 2000;
+  position: absolute;
+  bottom: 2vh;
+  right: 3vh;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  align-content: center;
+}
+
+.toast-body {
+  background-color: #0d6efd !important;
+
+}

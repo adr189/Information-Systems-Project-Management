@@ -1,0 +1,16 @@
+<div class="projeto-name">
+  <input focusOnInit class="searchUsersInput form-control mr-sm-2"
+         type="search" placeholder="Search" aria-label="Search"
+         #newUserName
+         (input)="search(newUserName.value)" (focusin)="search('all')" list="datalistOptions">
+  <datalist id="datalistOptions">
+    <option *ngFor="let user of users$ | async" [value]="user.name">{{saveCurrentUser(user._id)}}</option>
+  </datalist>
+  <div>
+    <button type="button" class="btnProjetoName btn btn-primary"
+            (click)="this.callbackFunction(this.currentUserId);">
+      <i class="bi bi-person-plus"></i>
+    </button>
+  </div>
+</div>
+

@@ -1,0 +1,54 @@
+<div class="users">
+  <h3 class="my-h3">Create user</h3>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+
+      <div class="col-md-3 mb-3">
+        <label for="user_name" class="form-label">Name</label>
+        <input focusOnInit type="text" class="form-control" id="user_name" placeholder="User's name" formControlName="name"
+               [ngClass]="{ 'is-invalid': submitted && f['name'].errors }">
+        <div *ngIf="submitted && f['name'].errors" class="invalid-feedback">
+          <div *ngIf="f['name'].errors?.['required']">Name is required</div>
+          <div *ngIf="f['name'].errors?.['minlength']">Minimum 3 characters</div>
+          <div *ngIf="f['name'].errors?.['pattern']">Alphanumeric characters only</div>
+          <div *ngIf="f['name'].errors?.['unique']">Name already exists</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <label for="user_password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="user_password" placeholder="User's password"
+               formControlName="password" aria-describedby="passwordHelp"
+               [ngClass]="{ 'is-invalid': submitted && f['password'].errors }">
+        <span id="passwordHelp" class="form-text">
+The password must be 8 or more characters, including at least one uppercase letter, one lowercase letter and one number                     </span>
+        <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+          <div *ngIf="f['password'].errors?.['required']">Password required</div>
+          <div *ngIf="f['password'].errors?.['minlength']">Minimum 8 characters</div>
+          <div *ngIf="f['password'].errors?.['password']?.['lower'].invalid">At least one lowercase</div>
+          <div *ngIf="f['password'].errors?.['password']?.['upper'].invalid">At least one uppercase letter</div>
+          <div *ngIf="f['password'].errors?.['password']?.['digit'].invalid">At least one digit</div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <button type="submit" class="button-add-user btn btn-primary">Create user</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="list-users">
+    <h3 class="my-h3">List of users</h3>
+    <div class="listUsers row ">
+      <div *ngFor="let user of users" class="user col-md-3 col-sm-6 col-xs-6">
+        <div tabindex=0 class="mycard card" style="width: 18rem;">
+          <img class="userImage card-img-top" src="../../assets/images/user_image.png" alt="Card image cap">
+          <div class="user card-body">
+            <div>
+              <a class="ellipsis">{{user.name}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

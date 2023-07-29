@@ -1,0 +1,34 @@
+<div class="teams">
+  <h3 class="my-h3">Create team</h3>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <label for="team_name" class="form-label">Name</label>
+        <input focusOnInit type="text" class="form-control" id="team_name" placeholder="Team's name" formControlName="name"
+               [ngClass]="{ 'is-invalid': submitted && f['name'].errors} ">
+        <div *ngIf="submitted &&  f['name'].errors " class="invalid-feedback">
+          <div *ngIf="f['name'].errors?.['required']">Name is required</div>
+          <div *ngIf="f['name'].errors?.['minlength']">Minimum 4 characters</div>
+          <div *ngIf="f['name'].errors?.['pattern']">Alphanumeric characters only</div>
+          <div *ngIf="f['name'].errors?.['unique']">Name already exists</div>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Create Team</button>
+  </form>
+  <div class="list-teams">
+    <h3 class="my-h3">List of teams</h3>
+    <div class="row ">
+      <div *ngFor="let team of teams" class="user col-md-3 col-sm-6 col-xs-6">
+          <div tabindex="0" (keyup.enter)="navigateToDetails(team._id)"
+             class="mycard card" style="width: 18rem;" (click)="navigateToDetails(team._id)">
+          <img class="userImage card-img-top" src="../../assets/images/default_group.png" alt="Card image cap">
+          <div class="user card-body">
+            <div>
+              <a class="ellipsis">{{team.name}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
